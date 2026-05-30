@@ -417,6 +417,23 @@
     0% { opacity: 1; }
     100% { opacity: 0; }
   }
+
+  /* Mobile scaling: board-wrap uses transform-origin top-center so JS can scale it */
+  #board-wrap {
+    transform-origin: top center;
+    transition: transform 0.2s ease;
+  }
+
+  /* Compact HUD on small screens */
+  @media (max-width: 500px) {
+    h1 { font-size: 1.6rem; margin-bottom: 2px; }
+    .subtitle { font-size: 0.72rem; margin-bottom: 8px; }
+    #hud { gap: 8px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; }
+    .hud-box { padding: 6px 12px; border-radius: 10px; }
+    .hud-label { font-size: 0.58rem; }
+    .hud-val { font-size: 1.2rem; }
+    body { padding: 10px 4px 16px; }
+  }
 </style>
 </head>
 <body>
@@ -618,11 +635,20 @@ function onTouchStart(e) {
   const r = parseInt(e.currentTarget.dataset.r);
   const c = parseInt(e.currentTarget.dataset.c);
   touchOrigin = { r, c, startX: touch.clientX, startY: touch.clientY };
-  window.addEventListener('touchmove', onTouchMove, { passive: true });
+  // Must be non-passive so we can call preventDefault() to block page scroll
+  window.addEventListener('touchmove', onTouchMove, { passive: false });
   window.addEventListener('touchend', onTouchEnd);
 }
 
 function onTouchMove(e) {
+  if (!touchOrigin) return;
+  const touch = e.touches[0];
+  const dx = touch.clientX - touchOrigin.startX;
+  const dy = touch.clientY - touchOrigin.startY;
+  // Once the gesture crosses the threshold, block native scroll in all directions
+  if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
+    e.preventDefault();
+  }
 }
 
 function onTouchEnd(e) {
@@ -1172,6 +1198,39 @@ function showHint() {
 
 function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
 
+// ── Mobile scaling ──────────────────────────────────────────────────────────
+function scaleBoardToFit() {
+  const boardWrap = document.getElementById('board-wrap');
+  boardWrap.style.transform = 'none';
+  boardWrap.style.marginBottom = '0';
+
+  const titleEl = document.querySelector('h1');
+  const subEl   = document.querySelector('.subtitle');
+  const hudEl   = document.getElementById('hud');
+
+  const titleH = titleEl ? titleEl.offsetHeight : 0;
+  const subH   = subEl   ? subEl.offsetHeight   : 0;
+  const hudH   = hudEl   ? hudEl.offsetHeight   : 0;
+  // Approximate spacing used by margins/padding between stacked elements
+  const overhead = titleH + subH + hudH + 80;
+
+  const availH = window.innerHeight - overhead;
+  const availW = window.innerWidth  - 20;
+
+  const naturalW = boardWrap.offsetWidth;
+  const naturalH = boardWrap.offsetHeight;
+
+  const scale = Math.min(availW / naturalW, availH / naturalH, 1);
+
+  boardWrap.style.transform = `scale(${scale})`;
+  // Pull up the empty gap left by scaling down
+  boardWrap.style.marginBottom = `-${naturalH * (1 - scale)}px`;
+}
+
+window.addEventListener('resize', scaleBoardToFit);
+window.addEventListener('load', scaleBoardToFit);
+setTimeout(scaleBoardToFit, 150);
+
 function triggerGameOver() {
   gameOver = true;
   busy = true;
@@ -1202,6 +1261,7 @@ function startNewGame() {
   renderBoard();
   updateHUD();
   resetHintTimer();
+  scaleBoardToFit();
 }
 movesLeft = MAX_MOVES;
 best = parseInt(localStorage.getItem('royal_best')||'0');
@@ -1209,6 +1269,7 @@ updateHUD();
 initBoard();
 renderBoard();
 resetHintTimer();
+scaleBoardToFit();
 </script>
 </body>
 </html>
