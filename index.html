@@ -424,6 +424,11 @@
     transition: transform 0.2s ease;
   }
 
+  /* Prevent browser scroll/pan while the user is swiping tiles */
+  #board, #board * {
+    touch-action: none;
+  }
+
   /* Compact HUD on small screens */
   @media (max-width: 500px) {
     h1 { font-size: 1.6rem; margin-bottom: 2px; }
@@ -1079,11 +1084,12 @@ function addScore(pts, cells) {
     const avgR = cells.reduce((s,[r])=>s+r,0)/cells.length;
     const avgC = cells.reduce((s,[,c])=>s+c,0)/cells.length;
     const bRect = boardEl.getBoundingClientRect();
+    const scale = getBoardScale();
     const pop = document.createElement('div');
     pop.className = 'score-pop';
     pop.textContent = '+'+pts;
-    pop.style.left = (bRect.left + 10 + avgC*66 + 20)+'px';
-    pop.style.top  = (bRect.top  + 10 + avgR*66 + 10)+'px';
+    pop.style.left = (bRect.left + (10 + avgC*66 + 20) * scale)+"px";
+    pop.style.top  = (bRect.top  + (10 + avgR*66 + 10) * scale)+"px";
     pop.style.position = 'fixed';
     document.body.appendChild(pop);
     pop.addEventListener('animationend',()=>pop.remove());
@@ -1131,10 +1137,19 @@ function awardBonusMoves() {
   pop.addEventListener('animationend', () => pop.remove());
 }
 
+function getBoardScale() {
+  const boardWrap = document.getElementById('board-wrap');
+  const matrix = window.getComputedStyle(boardWrap).transform;
+  if (!matrix || matrix === 'none') return 1;
+  const m = new DOMMatrix(matrix);
+  return m.a;
+}
+
 function spawnExplosion(r,c) {
   const bRect = boardEl.getBoundingClientRect();
-  const x = bRect.left + 10 + c*66 + 33;
-  const y = bRect.top  + 10 + r*66 + 33;
+  const scale = getBoardScale();
+  const x = bRect.left + (10 + c*66 + 33) * scale;
+  const y = bRect.top  + (10 + r*66 + 33) * scale;
   const ring = document.createElement('div');
   ring.className = 'explosion';
   ring.style.left = x+'px';
@@ -1146,19 +1161,20 @@ function spawnExplosion(r,c) {
 
 function spawnFireworkLine(r, c, dir) {
   const bRect = boardEl.getBoundingClientRect();
+  const scale = getBoardScale();
   const line = document.createElement('div');
   if (dir === 'h') {
-    const y = bRect.top + 10 + r*66 + 30;
+    const y = bRect.top + (10 + r*66 + 30) * scale;
     line.className = 'firework-line';
-    line.style.left = (bRect.left + 10) + 'px';
+    line.style.left = bRect.left + 'px';
     line.style.top = y + 'px';
-    line.style.width = (COLS * 66) + 'px';
+    line.style.width = bRect.width + 'px';
   } else {
-    const x = bRect.left + 10 + c*66 + 30;
+    const x = bRect.left + (10 + c*66 + 30) * scale;
     line.className = 'firework-line vertical';
     line.style.left = x + 'px';
-    line.style.top = (bRect.top + 10) + 'px';
-    line.style.height = (ROWS * 66) + 'px';
+    line.style.top = bRect.top + 'px';
+    line.style.height = bRect.height + 'px';
   }
   line.style.position = 'fixed';
   document.body.appendChild(line);
