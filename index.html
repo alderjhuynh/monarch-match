@@ -188,6 +188,165 @@
   }
   @keyframes disco-spin { to { transform: rotate(360deg); } }
 
+  #moves-box {
+    transition: background 0.3s, border-color 0.3s;
+  }
+  #moves-box.low {
+    background: rgba(255, 60, 60, 0.25);
+    border-color: rgba(255, 80, 80, 0.6);
+    animation: moves-pulse 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes moves-pulse {
+    from { box-shadow: 0 0 0px #f00; }
+    to   { box-shadow: 0 0 14px 4px rgba(255,60,60,0.5); }
+  }
+  #moves-box.low #moves-val { color: #ff6060; }
+
+  #moves-box.bonus {
+    animation: moves-bonus-flash 0.55s ease-out forwards;
+  }
+  @keyframes moves-bonus-flash {
+    0%   { background: rgba(80, 255, 160, 0.35); border-color: rgba(80,255,160,0.8); box-shadow: 0 0 20px 6px rgba(80,255,160,0.45); }
+    60%  { background: rgba(80, 255, 160, 0.15); border-color: rgba(80,255,160,0.4); }
+    100% { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); box-shadow: none; }
+  }
+
+  .bonus-moves-pop {
+    position: fixed;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.25rem;
+    color: #50ffa0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    pointer-events: none;
+    z-index: 300;
+    white-space: nowrap;
+    animation: bonus-float 1.3s ease-out forwards;
+  }
+  @keyframes bonus-float {
+    0%   { opacity: 0; transform: translateY(0) scale(0.7); }
+    20%  { opacity: 1; transform: translateY(-10px) scale(1.1); }
+    80%  { opacity: 1; transform: translateY(-44px) scale(1); }
+    100% { opacity: 0; transform: translateY(-60px) scale(0.9); }
+  }
+
+  #gameover-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 5, 40, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  #gameover-overlay.show {
+    display: flex;
+    animation: go-fade-in 0.4s ease-out;
+  }
+  @keyframes go-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  #gameover-card {
+    background: linear-gradient(160deg, #1e0e6a, #2a1280);
+    border: 2px solid rgba(245, 200, 66, 0.5);
+    border-radius: 28px;
+    padding: 40px 50px;
+    text-align: center;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.7), 0 0 40px rgba(245,200,66,0.15);
+    max-width: 380px;
+    width: 90%;
+    animation: go-card-in 0.45s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes go-card-in {
+    from { transform: scale(0.7) translateY(40px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  #gameover-crown {
+    font-size: 3.5rem;
+    margin-bottom: 8px;
+    filter: grayscale(0.4);
+    animation: crown-drop 0.6s cubic-bezier(.34,1.56,.64,1) 0.2s both;
+  }
+  @keyframes crown-drop {
+    from { transform: translateY(-30px) scale(0.5); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  #gameover-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+
+  #gameover-scores {
+    background: rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 18px 24px;
+    margin-bottom: 16px;
+  }
+
+  .go-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+  }
+  .go-score-row + .go-score-row {
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .go-score-label {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .go-score-val {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.7rem;
+    color: var(--gold);
+  }
+
+  #go-new-best {
+    color: #ffe066;
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    animation: sparkle 0.6s ease-in-out infinite alternate;
+  }
+  #go-new-best.hidden { display: none; }
+  @keyframes sparkle {
+    from { opacity: 0.7; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1.03); }
+  }
+
+  #replay-btn {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #f5c842, #c89010);
+    color: #1a0a4c;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1.5px;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 44px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(245,200,66,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  #replay-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 28px rgba(245,200,66,0.6);
+  }
+  #replay-btn:active { 
+    transform: scale(0.97);
+  }
+
   .score-pop {
     position: absolute;
     font-family: 'Fredoka One', cursive;
@@ -278,6 +437,29 @@
     <div class="hud-label">Combo</div>
     <div class="hud-val" id="combo-val">x1</div>
   </div>
+  <div class="hud-box" id="moves-box">
+    <div class="hud-label">Moves</div>
+    <div class="hud-val" id="moves-val">30</div>
+  </div>
+</div>
+
+<div id="gameover-overlay">
+  <div id="gameover-card">
+    <div id="gameover-crown">👑</div>
+    <div id="gameover-title">Out of Moves!</div>
+    <div id="gameover-scores">
+      <div class="go-score-row">
+        <span class="go-score-label">Your Score</span>
+        <span class="go-score-val" id="go-score">0</span>
+      </div>
+      <div class="go-score-row" id="go-best-row">
+        <span class="go-score-label">Best</span>
+        <span class="go-score-val" id="go-best">0</span>
+      </div>
+    </div>
+    <div id="go-new-best" class="hidden">New Best Score!</div>
+    <button id="replay-btn" onclick="startNewGame()">Play Again</button>
+  </div>
 </div>
 
 <div id="board-wrap">
@@ -310,6 +492,9 @@ let selected = null;
 let score = 0, best = 0, combo = 1;
 let busy = false;
 let hintTimer = null;
+const MAX_MOVES = 30;
+let movesLeft = MAX_MOVES;
+let gameOver = false;
 
 function randColor() { return COLORS[Math.floor(Math.random()*COLORS.length)]; }
 function createTile(color, special=SPECIAL.NONE) { return { color, special }; }
@@ -385,7 +570,7 @@ let dragMoved = false;
 const DRAG_THRESHOLD = 18;
 
 function onDragStart(e) {
-  if (busy) return;
+  if (busy || gameOver) return;
   const r = parseInt(e.currentTarget.dataset.r);
   const c = parseInt(e.currentTarget.dataset.c);
   dragOrigin = { r, c, startX: e.clientX, startY: e.clientY };
@@ -413,7 +598,6 @@ function onDragEnd(e) {
   const { r, c } = dragOrigin;
   dragOrigin = null;
 
-  // Determine direction with largest magnitude
   let tr = r, tc = c;
   if (Math.abs(dx) >= Math.abs(dy)) {
     tc = dx > 0 ? c + 1 : c - 1;
@@ -429,7 +613,7 @@ function onDragEnd(e) {
 let touchOrigin = null;
 
 function onTouchStart(e) {
-  if (busy) return;
+  if (busy || gameOver) return;
   const touch = e.touches[0];
   const r = parseInt(e.currentTarget.dataset.r);
   const c = parseInt(e.currentTarget.dataset.c);
@@ -451,7 +635,7 @@ function onTouchEnd(e) {
   const { r, c } = touchOrigin;
   touchOrigin = null;
 
-  if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return; // tap, let click handle
+  if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
 
   let tr = r, tc = c;
   if (Math.abs(dx) >= Math.abs(dy)) {
@@ -466,7 +650,7 @@ function onTouchEnd(e) {
 }
 
 function onTileClick(e) {
-  if (busy) return;
+  if (busy || gameOver) return;
   if (dragMoved) { dragMoved = false; return; }
   const r = parseInt(e.currentTarget.dataset.r);
   const c = parseInt(e.currentTarget.dataset.c);
@@ -520,8 +704,10 @@ async function attemptSwap(r1,c1,r2,c2) {
     animateSwapForward(r1,c1,r2,c2);
     await sleep(220);
     doSwap(r1,c1,r2,c2);
+    movesLeft--; updateHUD();
     await handleDiscoSwap(r1,c1,r2,c2,t1,t2);
     busy = false;
+    if (movesLeft <= 0) { triggerGameOver(); return; }
     return;
   }
 
@@ -547,6 +733,7 @@ async function attemptSwap(r1,c1,r2,c2) {
     const stype = t1?.special !== SPECIAL.NONE ? t1.special : t2.special;
     const scolor = t1?.special !== SPECIAL.NONE ? t1.color : t2.color;
     board[specialR][specialC] = null;
+    movesLeft--; updateHUD();
     await triggerSpecial(specialR, specialC, stype, scolor);
     await dropTiles();
     await sleep(80);
@@ -554,6 +741,7 @@ async function attemptSwap(r1,c1,r2,c2) {
     if (nm.length > 0) { showCombo(); await processMatches(nm); }
     else { combo = 1; updateHUD(); }
     busy = false;
+    if (movesLeft <= 0) { triggerGameOver(); return; }
     resetHintTimer();
     return;
   }
@@ -562,8 +750,10 @@ async function attemptSwap(r1,c1,r2,c2) {
   animateSwapForward(r1,c1,r2,c2);
   await sleep(220);
   doSwap(r1,c1,r2,c2);
+  movesLeft--; updateHUD();
   await processMatches(matches, r1,c1,r2,c2);
   busy = false;
+  if (movesLeft <= 0) { triggerGameOver(); return; }
   resetHintTimer();
 }
 
@@ -672,9 +862,9 @@ async function processMatches(matches, swapR1=-1, swapC1=-1, swapR2=-1, swapC2=-
   const pts = matches.length * 60 * combo;
   addScore(pts, matches);
   combo++;
+  if (combo > COMBO_BONUS_THRESHOLD) awardBonusMoves();
   updateHUD();
 
-  // Animate matched tiles
   renderBoard();
   for (const [r,c] of matches) {
     const el = getTileEl(r,c);
@@ -791,7 +981,7 @@ async function triggerSpecial(r, c, special, triggerColor) {
 }
 
 async function handleDiscoSwap(r1,c1,r2,c2,origT1,origT2) {
-  const discoPos = origT1?.special===SPECIAL.DISCO ? [r2,c2] : [r1,c1]; // after doSwap
+  const discoPos = origT1?.special===SPECIAL.DISCO ? [r2,c2] : [r1,c1];
   const otherPos = origT1?.special===SPECIAL.DISCO ? [r1,c1] : [r2,c2];
   const otherTile = board[otherPos[0]][otherPos[1]];
 
@@ -878,6 +1068,10 @@ function updateHUD() {
   document.getElementById('score-val').textContent = score.toLocaleString();
   document.getElementById('best-val').textContent = best.toLocaleString();
   document.getElementById('combo-val').textContent = `x${combo}`;
+  document.getElementById('moves-val').textContent = movesLeft;
+  const movesBox = document.getElementById('moves-box');
+  if (movesLeft <= 8) movesBox.classList.add('low');
+  else movesBox.classList.remove('low');
 }
 
 function showCombo() {
@@ -886,6 +1080,29 @@ function showCombo() {
   el.classList.remove('show');
   void el.offsetWidth;
   el.classList.add('show');
+}
+
+const COMBO_BONUS_THRESHOLD = 4;
+const COMBO_BONUS_MOVES = 2;
+
+function awardBonusMoves() {
+  movesLeft += COMBO_BONUS_MOVES;
+  updateHUD();
+
+  const box = document.getElementById('moves-box');
+  box.classList.remove('bonus');
+  void box.offsetWidth;
+  box.classList.add('bonus');
+
+  const boxRect = box.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 'bonus-moves-pop';
+  pop.textContent = `+${COMBO_BONUS_MOVES} Moves!`;
+  pop.style.left = (boxRect.left + boxRect.width / 2) + 'px';
+  pop.style.top  = (boxRect.top - 10) + 'px';
+  pop.style.transform = 'translateX(-50%)';
+  document.body.appendChild(pop);
+  pop.addEventListener('animationend', () => pop.remove());
 }
 
 function spawnExplosion(r,c) {
@@ -955,6 +1172,38 @@ function showHint() {
 
 function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
 
+function triggerGameOver() {
+  gameOver = true;
+  busy = true;
+  if (hintTimer) clearTimeout(hintTimer);
+  clearSelected();
+
+  const isNewBest = score > 0 && score >= best;
+  document.getElementById('go-score').textContent = score.toLocaleString();
+  document.getElementById('go-best').textContent = best.toLocaleString();
+  const newBestEl = document.getElementById('go-new-best');
+  if (isNewBest && score > 0) newBestEl.classList.remove('hidden');
+  else newBestEl.classList.add('hidden');
+
+  setTimeout(() => {
+    document.getElementById('gameover-overlay').classList.add('show');
+  }, 400);
+}
+
+function startNewGame() {
+  document.getElementById('gameover-overlay').classList.remove('show');
+  score = 0;
+  combo = 1;
+  movesLeft = MAX_MOVES;
+  gameOver = false;
+  busy = false;
+  selected = null;
+  initBoard();
+  renderBoard();
+  updateHUD();
+  resetHintTimer();
+}
+movesLeft = MAX_MOVES;
 best = parseInt(localStorage.getItem('royal_best')||'0');
 updateHUD();
 initBoard();
